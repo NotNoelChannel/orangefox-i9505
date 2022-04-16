@@ -36,7 +36,8 @@ jobs:
         mkdir ~/.bin
         curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ~/.bin/repo
         python3 ~/.bin/repo init --depth=1 -u https://gitlab.com/OrangeFox/Manifest.git -b fox_7.1
-        git clone --branch android-7.1 --single-branch https://github.com/TeamWin/android_device_samsung_jflte.git ~/TWRP/device/samsung/jflte
+        git clone --branch android-7.1 --single-branch https://github.com/TWRP-resurrection/android_device_samsung_jflte.git ~/TWRP/device/samsung/jflte
+        git clone --branch cm-14.1 --single-branch https://github.com/LineageOS/android_kernel_samsung_jf.git ~/TWRP/kernel/samsung/jf
         python3 ~/.bin/repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j$(nproc --all)
     - name: Building TWRP
       run: |
