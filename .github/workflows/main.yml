@@ -18,7 +18,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Installing JDK 7 + Build Dependencies
+    - name: Installing JDK 8 + Build Dependencies
       run: |
         sudo apt-get update
         sudo apt-get install zip gcc-multilib g++-multilib \
@@ -29,15 +29,19 @@ jobs:
         axel -q -n $(nproc --all) https://repo.huaweicloud.com/java/jdk/8u202-b08/jdk-8u202-linux-x64.tar.gz
         tar -xzf jdk-8u202-linux-x64.tar.gz
         sudo ln -f -s /usr/bin/python2.7 /usr/bin/python
-    - name: Syncing TWRP sources
+    - name: Syncing unlegacy-devices sources
       run: |
         mkdir ~/TWRP
         cd ~/TWRP
         mkdir ~/.bin
         curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > ~/.bin/repo
-        python3 ~/.bin/repo init --depth=1 -u https://github.com/JDCTeam/manifests.git -b pitchblack-jf
+        python3 ~/.bin/repo init --depth=1 -u https://github.com/unlegacy-devices/minimal_manifest_lineage_recovery.git -b lineage-13.0
         python3 ~/.bin/repo sync -c --force-sync --optimized-fetch --no-tags --no-clone-bundle --prune -j$(nproc --all)
-    - name: Building TWRP
+        git clone https://github.com/LineageOS/android_device_samsung_jfltexx -b cm-13.0 ~/TWRP/device/samsung/jfltexx
+        git clone https://github.com/LineageOS/android_device_samsung_jf-common -b cm-13.0 ~/TWRP/device/samsung/jf-common
+        git clone https://github.com/LineageOS/android_device_samsung_qcom-common -b cm-13.0 ~/TWRP/device/samsung/qcom-common
+        git clone https://github.com/LineageOS/android_kernel_samsung_jf -b cm-13.0 ~/TWRP/kernel/samsung/jf
+    - name: Building LineageOS Recovery
       run: |
         OLDPATH=$PATH
         OLDJAVAHOME=$JAVA_HOME
@@ -48,12 +52,12 @@ jobs:
         export ALLOW_MISSING_DEPENDENCIES=true
         export FOX_USE_TWRP_RECOVERY_IMAGE_BUILDER=1
         export LC_ALL="C"
-        lunch omni_jflte-eng
+        lunch lineage_jfltexx-eng
         make -j$(nproc --all) recoveryimage
         export PATH=$OLDPATH
         export JAVA_HOME=$OLDJAVAHOME
-    - name: Uploading TWRP builds
+    - name: Uploading LineageOS Recovery builds
       uses: actions/upload-artifact@v2
       with:
         name: twrp
-        path: /home/runner/TWRP/out/target/product/jflte/recovery.*
+        path: /home/runner/TWRP/out/target/product/jfltexx/recovery.*
