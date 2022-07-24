@@ -41,6 +41,7 @@ jobs:
         git clone https://github.com/LineageOS/android_device_samsung_jf-common -b cm-13.0 ~/TWRP/device/samsung/jf-common
         git clone https://github.com/LineageOS/android_device_samsung_qcom-common -b cm-13.0 ~/TWRP/device/samsung/qcom-common
         git clone https://github.com/LineageOS/android_kernel_samsung_jf -b cm-13.0 ~/TWRP/kernel/samsung/jf
+        git clone https://github.com/LineageOS/android_device_qcom_sepolicy -b cm-13.0 ~/TWRP/device/qcom/sepolicy
     - name: Building LineageOS Recovery
       run: |
         OLDPATH=$PATH
